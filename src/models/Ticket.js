@@ -15,8 +15,7 @@ class Ticket {
     const [rows] = await db.execute(`
             SELECT t.*, p.parking_number 
             FROM ticket t 
-            LEFT JOIN parkir p ON t.parking_id = p.id 
-            ORDER BY t.id DESC
+            LEFT JOIN parkir p ON t.parking_id = p.id
         `);
     return rows;
   }
