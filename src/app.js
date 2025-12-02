@@ -2,8 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const setRoutes = require("./routes/index");
+const mqttService = require("./services/mqttService");
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize MQTT connection
+mqttService.connect();
 
 // Middleware
 app.use(bodyParser.json());
@@ -25,6 +29,7 @@ app.get("/", (req, res) => {
     endpoints: {
       parkir: "/api/parkir",
       tickets: "/api/tickets",
+      gate: "/api/gate",
     },
   });
 });
