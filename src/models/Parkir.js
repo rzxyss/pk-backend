@@ -12,7 +12,7 @@ class Parkir {
 
   // Get all parking spots
   static async findAll() {
-    const [rows] = await db.execute("SELECT * FROM parkir ORDER BY id DESC");
+    const [rows] = await db.execute("SELECT * FROM parkir ORDER BY id ASC");
     return rows;
   }
 
