@@ -4,7 +4,7 @@ class ParkirController {
   // Create a new parking spot
   async createParkir(req, res) {
     try {
-      const { parking_number, is_used } = req.body;
+      const { parking_number, is_used, trig, echo } = req.body;
 
       if (!parking_number) {
         return res.status(400).json({
@@ -22,7 +22,12 @@ class ParkirController {
         });
       }
 
-      const result = await Parkir.create(parking_number, is_used || 0);
+      const result = await Parkir.create(
+        parking_number,
+        is_used || 0,
+        trig,
+        echo
+      );
 
       res.status(201).json({
         success: true,
@@ -31,6 +36,8 @@ class ParkirController {
           id: result.insertId,
           parking_number,
           is_used: is_used || 0,
+          trig,
+          echo,
         },
       });
     } catch (error) {
@@ -92,7 +99,7 @@ class ParkirController {
   async updateParkir(req, res) {
     try {
       const { id } = req.params;
-      const { parking_number, is_used } = req.body;
+      const { parking_number, is_used, trig, echo } = req.body;
 
       const existing = await Parkir.findById(id);
       if (!existing) {
@@ -116,7 +123,9 @@ class ParkirController {
       const result = await Parkir.update(
         id,
         parking_number || existing.parking_number,
-        is_used !== undefined ? is_used : existing.is_used
+        is_used !== undefined ? is_used : existing.is_used,
+        trig !== undefined ? trig : existing.trig,
+        echo !== undefined ? echo : existing.echo
       );
 
       if (result.affectedRows === 0) {

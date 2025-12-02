@@ -2,10 +2,10 @@ const db = require("../config/database");
 
 class Parkir {
   // Create a new parking spot
-  static async create(parkingNumber, isUsed = 0) {
+  static async create(parkingNumber, isUsed = 0, trig, echo) {
     const [result] = await db.execute(
-      "INSERT INTO parkir (parking_number, is_used) VALUES (?, ?)",
-      [parkingNumber, isUsed]
+      "INSERT INTO parkir (parking_number, is_used, trig, echo) VALUES (?, ?, ?, ?)",
+      [parkingNumber, isUsed, trig, echo]
     );
     return result;
   }
@@ -32,10 +32,10 @@ class Parkir {
   }
 
   // Update parking spot
-  static async update(id, parkingNumber, isUsed) {
+  static async update(id, parkingNumber, isUsed, trig, echo) {
     const [result] = await db.execute(
-      "UPDATE parkir SET parking_number = ?, is_used = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-      [parkingNumber, isUsed, id]
+      "UPDATE parkir SET parking_number = ?, is_used = ?, trig = ?, echo = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+      [parkingNumber, isUsed, trig, echo, id]
     );
     return result;
   }
