@@ -35,7 +35,7 @@ class TicketController {
       const result = await Ticket.create(number_plate, parking_id);
 
       // Update parking spot status to used
-      await Parkir.updateStatus(parking_id, 1);
+      // await Parkir.updateStatus(parking_id, 1);
 
       res.status(201).json({
         success: true,
@@ -204,7 +204,7 @@ class TicketController {
       await Ticket.checkout(id);
 
       // Free up parking spot
-      await Parkir.updateStatus(existing.parking_id, 0);
+      // await Parkir.updateStatus(existing.parking_id, 0);
 
       const updated = await Ticket.findById(id);
       res.status(200).json({
@@ -236,9 +236,9 @@ class TicketController {
       }
 
       // Free up parking spot if ticket was active
-      if (!existing.is_paid) {
-        await Parkir.updateStatus(existing.parking_id, 0);
-      }
+      // if (!existing.is_paid) {
+      //   await Parkir.updateStatus(existing.parking_id, 0);
+      // }
 
       await Ticket.delete(id);
 
