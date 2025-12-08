@@ -51,12 +51,14 @@ class GateController {
   async getStatus(req, res) {
     try {
       const isConnected = mqttService.getConnectionStatus();
+      const gateStatus = mqttService.getGateStatus();
 
       res.status(200).json({
         success: true,
         data: {
           mqtt_connected: isConnected,
-          status: isConnected ? "connected" : "disconnected",
+          mqtt_status: isConnected ? "connected" : "disconnected",
+          gate_status: gateStatus,
         },
       });
     } catch (error) {

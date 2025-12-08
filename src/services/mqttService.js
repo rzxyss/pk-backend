@@ -4,6 +4,7 @@ class MQTTService {
   constructor() {
     this.client = null;
     this.isConnected = false;
+    this.gateStatus = "unknown"; // Track gate status: 'open', 'close', or 'unknown'
     this.connectionOptions = {
       host: process.env.MQTT_HOST || "your-hivemq-cloud-url.hivemq.cloud",
       port: process.env.MQTT_PORT || 8883,
@@ -28,6 +29,9 @@ class MQTTService {
       this.client.on("connect", () => {
         this.isConnected = true;
         console.log("✓ MQTT connected to HiveMQ Cloud");
+
+        // Subscribe to gate status topic
+        this.subscribeToGateStatus();
       });
 
       this.client.on("error", (error) => {
@@ -60,6 +64,15 @@ class MQTTService {
           reject(error);
         } else {
           console.log(`✓ Published to ${topic}: ${message}`);
+
+          // Update gate status when publishing to gate_action
+          if (
+            topic === "gate_action" &&
+            (message === "open" || message === "close")
+          ) {
+            this.gateStatus = message;
+          }
+
           resolve();
         }
       });
@@ -97,6 +110,37 @@ class MQTTService {
 
   getConnectionStatus() {
     return this.isConnected;
+  }
+
+  subscribeToGateStatus() {
+    const topic = "gate_action";
+
+    if (!this.client || !this.isConnected) {
+      console.error("Cannot subscribe to gate action: MQTT not connected");
+      return;
+    }
+
+    this.client.subscribe(topic, (error) => {
+      if (error) {
+        console.error(`Failed to subscribe to ${topic}:`, error.message);
+      } else {
+        console.log(`✓ Subscribed to ${topic}`);
+      }
+    });
+
+    this.client.on("message", (receivedTopic, message) => {
+      if (receivedTopic === topic) {
+        const status = message.toString().toLowerCase();
+        if (status === "open" || status === "close") {
+          this.gateStatus = status;
+          console.log(`Gate status updated from MQTT: ${status}`);
+        }
+      }
+    });
+  }
+
+  getGateStatus() {
+    return this.gateStatus;
   }
 }
 
