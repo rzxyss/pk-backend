@@ -31,6 +31,24 @@ class Parkir {
     return rows[0];
   }
 
+  // Get parking spot by trig and echo pins
+  static async findByPins(trig, echo) {
+    const [rows] = await db.execute(
+      "SELECT * FROM parkir WHERE trig = ? AND echo = ?",
+      [trig, echo]
+    );
+    return rows[0];
+  }
+
+  // Update parking spot status by trig and echo pins
+  static async updateStatusByPins(trig, echo, isUsed) {
+    const [result] = await db.execute(
+      "UPDATE parkir SET is_used = ?, updated_at = CURRENT_TIMESTAMP WHERE trig = ? AND echo = ?",
+      [isUsed, trig, echo]
+    );
+    return result;
+  }
+
   // Update parking spot
   static async update(id, parkingNumber, isUsed, trig, echo) {
     const [result] = await db.execute(

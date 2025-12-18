@@ -189,6 +189,59 @@ class ParkirController {
     }
   }
 
+  // Update parking spot status by trig and echo pins
+  async updateStatusByPins(req, res) {
+    try {
+      const { trig, echo, is_used } = req.body;
+
+      if (trig === undefined || echo === undefined) {
+        return res.status(400).json({
+          success: false,
+          message: "trig and echo pins are required",
+        });
+      }
+
+      if (is_used === undefined) {
+        return res.status(400).json({
+          success: false,
+          message: "is_used field is required",
+        });
+      }
+
+      // Check if parking spot exists
+      const parking = await Parkir.findByPins(trig, echo);
+      if (!parking) {
+        return res.status(404).json({
+          success: false,
+          message: `Parking spot not found with trig=${trig}, echo=${echo}`,
+        });
+      }
+
+      const result = await Parkir.updateStatusByPins(trig, echo, is_used);
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Failed to update parking status",
+        });
+      }
+
+      const updated = await Parkir.findByPins(trig, echo);
+      res.status(200).json({
+        success: true,
+        message: "Parking status updated successfully",
+        data: updated,
+      });
+    } catch (error) {
+      console.error("Error updating parking status by pins:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update parking status",
+        error: error.message,
+      });
+    }
+  }
+
   // Delete parking spot
   async deleteParkir(req, res) {
     try {

@@ -21,6 +21,12 @@ router.patch(
   parkirController.updateStatus.bind(parkirController)
 );
 
+// Update parking spot status by trig and echo pins
+router.post(
+  "/status/update",
+  parkirController.updateStatusByPins.bind(parkirController)
+);
+
 // Delete parking spot by ID
 router.delete("/:id", parkirController.deleteParkir.bind(parkirController));
 
