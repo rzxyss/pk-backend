@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const setRoutes = require("./routes/index");
 const mqttService = require("./services/mqttService");
+const ngrok = require("@ngrok/ngrok");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -55,12 +56,24 @@ app.use((req, res) => {
   });
 });
 
-// Start the server (only if not in Vercel environment)
-if (process.env.VERCEL !== "1") {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
+app.listen(PORT, async () => {
+  console.log(`Server is running on port ${PORT}`);
+
+  // Start ngrok tunnel
+  try {
+    const listener = await ngrok.connect({
+      addr: PORT,
+      authtoken_from_env: true,
+    });
+    const url = listener.url();
+    console.log(`\n🌐 Ngrok tunnel established!`);
+    console.log(`📡 Public URL: ${url}`);
+    console.log(`\nYou can access your API at: ${url}\n`);
+  } catch (error) {
+    console.error("Ngrok connection failed:", error.message);
+    console.log("Server still running locally on port", PORT);
+  }
+});
 
 // Export the app for Vercel
 module.exports = app;
