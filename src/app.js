@@ -56,24 +56,27 @@ app.use((req, res) => {
   });
 });
 
-app.listen(PORT, async () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
-
-  // Start ngrok tunnel
-  try {
-    const listener = await ngrok.connect({
-      addr: PORT,
-      authtoken_from_env: true,
-    });
-    const url = listener.url();
-    console.log(`\n🌐 Ngrok tunnel established!`);
-    console.log(`📡 Public URL: ${url}`);
-    console.log(`\nYou can access your API at: ${url}\n`);
-  } catch (error) {
-    console.error("Ngrok connection failed:", error.message);
-    console.log("Server still running locally on port", PORT);
-  }
 });
+// app.listen(PORT, async () => {
+//   console.log(`Server is running on port ${PORT}`);
+
+//   // Start ngrok tunnel
+//   try {
+//     const listener = await ngrok.connect({
+//       addr: PORT,
+//       authtoken_from_env: true,
+//     });
+//     const url = listener.url();
+//     console.log(`\n🌐 Ngrok tunnel established!`);
+//     console.log(`📡 Public URL: ${url}`);
+//     console.log(`\nYou can access your API at: ${url}\n`);
+//   } catch (error) {
+//     console.error("Ngrok connection failed:", error.message);
+//     console.log("Server still running locally on port", PORT);
+//   }
+// });
 
 // Export the app for Vercel
 module.exports = app;
