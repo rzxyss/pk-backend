@@ -270,6 +270,28 @@ class ParkirController {
       });
     }
   }
+
+  // Get count of available parking spots (is_used = 0)
+  async getAvailableCount(req, res) {
+    try {
+      const count = await Parkir.countAvailable();
+
+      res.status(200).json({
+        success: true,
+        message: "Available parking count retrieved successfully",
+        data: {
+          available_count: count,
+        },
+      });
+    } catch (error) {
+      console.error("Error getting available parking count:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to get available parking count",
+        error: error.message,
+      });
+    }
+  }
 }
 
 module.exports = new ParkirController();

@@ -9,6 +9,11 @@ router.post("/", parkirController.createParkir.bind(parkirController));
 // Get all parking spots
 router.get("/", parkirController.getAllParkir.bind(parkirController));
 
+router.get(
+  "/available",
+  parkirController.getAvailableCount.bind(parkirController)
+);
+
 // Get parking spot by ID
 router.get("/:id", parkirController.getParkirById.bind(parkirController));
 

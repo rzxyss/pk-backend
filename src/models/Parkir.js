@@ -72,6 +72,14 @@ class Parkir {
     const [result] = await db.execute("DELETE FROM parkir WHERE id = ?", [id]);
     return result;
   }
+
+  // Count available parking spots (is_used = 0)
+  static async countAvailable() {
+    const [rows] = await db.execute(
+      "SELECT COUNT(*) as count FROM parkir WHERE is_used = 0"
+    );
+    return rows[0].count;
+  }
 }
 
 module.exports = Parkir;
